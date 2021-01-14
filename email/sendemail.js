@@ -4,8 +4,8 @@ var hbs = require('nodemailer-express-handlebars')
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'mppskw@gmail.com',
-        pass: 'gunungkerinci123'
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD
     }
 });
 
@@ -20,13 +20,13 @@ exports.sendemail = async (datas, req, res) => {
     }));
 
     var mailOptions = {
-        from: 'noreply@mppskw.com',
+        from: 'noreply@blud.com',
         to: datas.email,
-        subject: 'Password Akun MPP',
+        subject: 'Password Akun e-BLUD',
         text: '',
         template: 'main',
         context: {
-            instansi: datas.nama_instansi,
+            instansi: datas.nama_blud,
             username: datas.username,
             password: datas.password
         }

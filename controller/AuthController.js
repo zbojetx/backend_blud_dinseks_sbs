@@ -7,13 +7,13 @@ const sendemail = require('./../email/sendemail')
 
 
 // SignUp
-exports.createinstansi = async (req, res) => {
+exports.createblud = async (req, res) => {
     try {
-        let { nama_instansi, username, email, logo } = req.body.datas;
-        let cekemail = await query('table_instansi').where('email', email);
-        let cekusername = await query('table_instansi').where('username', username);
+        let { nama_blud, username, email } = req.body.datas;
+        let cekemail = await query('table_blud').where('email', email);
+        let cekusername = await query('table_blud').where('username', username);
 
-        console.log(nama_instansi)
+        console.log(nama_blud)
 
         if (cekemail.length > 0 || cekusername.length > 0) {
             res.json({
@@ -24,21 +24,25 @@ exports.createinstansi = async (req, res) => {
             let passwordRandom = Math.floor(Math.random() * 1000000);
             let password = bcrypt.hashSync(passwordRandom.toString(), 10)
             let datasToSend = {
-                'nama_instansi': nama_instansi,
+                'nama_blud': nama_blud,
                 'email': email,
                 'username': username,
                 'password': passwordRandom
             }
 
-            let insert = await query('table_instansi').insert({
-                "nama_instansi": nama_instansi,
-                "logo": 'https://sipp.menpan.go.id/images/article/large/logo-kota-singkawang.png',
+            let insert = await query('table_blud').insert({
+                "kode_blud": "",
+                "nama_blud": nama_blud,
+                "alamat_blud" : "",
+                "logo": 'https://www.kla.id/wp-content/uploads/2018/03/LOGO-KABUPATEN-SAMBAS.png',
                 "username": username,
                 "email": email,
                 "password": password,
-                "limit_harian": 100,
-                "akses": "instansi",
-                "kode_antrian": "-"
+                "akses": "blud",
+                "status": 0,
+                "status_input": 0,
+                "nama_kepala_blud" : "",
+                "nip_kepala_blud" : ""
             })
 
             let sendEmail = await sendemail.sendemail(datasToSend)
@@ -56,7 +60,44 @@ exports.createinstansi = async (req, res) => {
 }
 
 // Login
-exports.login = async (req, res) => {
+exports.loginblud = async (req, res) => {
+    try {
+
+        let username = req.body.username
+        let password = req.body.password
+        console.log(username)
+        let userAccess = {
+            name: username
+        }
+        const accessToken = jwt.sign(userAccess, process.env.APP_SECRET_TOKEN)
+        let user = await query('table_blud').where('username', username)
+
+        console.log(accessToken)
+
+        if (user.length > 0) {
+            console.log(user[0].status)
+            if(user[0].status === '1'){
+                if (bcrypt.compareSync(password, user[0].password)) {
+                    res.json({
+                        "kode": 1,
+                        "status": "success",
+                        "accessToken": accessToken,
+                        "data": user,
+                    })
+                } else {
+                    res.json({ "kode": 2, "status": 'Password Anda Salah' });
+                }
+           }else{
+                res.json({ "kode": 3, "status": 'Password Anda Salah' });
+           }
+        } else {
+            res.json({ "kode": 3, "status": 'Username Tidak ditemukan' });
+        }
+    } catch (error) {
+    }
+}
+
+exports.loginadmin = async (req, res) => {
     try {
 
         let username = req.body.username
@@ -71,17 +112,21 @@ exports.login = async (req, res) => {
         console.log(accessToken)
 
         if (user.length > 0) {
-            console.log(user[0].password)
-            if (bcrypt.compareSync(password, user[0].password)) {
-                res.json({
-                    "kode": 1,
-                    "status": "success",
-                    "accessToken": accessToken,
-                    "data": user,
-                })
-            } else {
-                res.json({ "kode": 2, "status": 'Password Anda Salah' });
-            }
+            console.log(user[0].status)
+            //if(user[0].status === 1){
+                if (bcrypt.compareSync(password, user[0].password)) {
+                    res.json({
+                        "kode": 1,
+                        "status": "success",
+                        "accessToken": accessToken,
+                        "data": user,
+                    })
+                } else {
+                    res.json({ "kode": 2, "status": 'Password Anda Salah' });
+                }
+           // }else{
+                res.json({ "kode": 3, "status": 'Password Anda Salah' });
+           // }
         } else {
             res.json({ "kode": 3, "status": 'Username Tidak ditemukan' });
         }

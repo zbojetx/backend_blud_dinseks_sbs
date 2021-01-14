@@ -7,20 +7,20 @@ const jwt = require('jsonwebtoken')
 
 exports.index = async (req,res) => {
     try {
-
-        const jumlahpegawai = await query('table_pegawai').count('id', {as: 'total'})
-        const jumlahsppd = await query('table_sppd').count('id', {as: 'total'})
-        const jumlahsurattugas = await query('table_surat_tugas').count('id', {as: 'total'})
-        const totalanggaran = await query('table_rincian_anggaran').sum('jumlah', {as: 'total'})
-
+        var currentTime = new Date()
+        var year = currentTime.getFullYear()
+        const jumlahblud = await query('table_blud').count('id', {as: 'total'})
+        const anggaran_2020 = await query('table_total_pagu').where('tahun_anggaran', year)
+        const anggaran_dibagikan =  await query('table_pagu').sum('pagu', {as: 'total'}).where('tahun_anggaran', year)
+        const realisasianggaran = await query('table_rincian_anggaran').sum('jumlah', {as: 'total'}).where('tahun_anggaran', year)
         res.json({
             'kode': 1,
             'message': "success",
             "datas": {
-                jumlahpegawai,
-                jumlahsppd,
-                jumlahsurattugas,
-                totalanggaran
+                jumlahblud,
+                anggaran_2020,
+                anggaran_dibagikan,
+                realisasianggaran
             },
         }, 200)
 

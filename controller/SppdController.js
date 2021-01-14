@@ -10,12 +10,11 @@ let table = 'table_sppd'
 exports.getsppd = async (req,res) => {
     try {
         //console.log(id_instansi)
-        let sppd = await query(table).join('table_pegawai', 'table_sppd.nama_pegawai', '=', 'table_pegawai.id')
-        .select('table_sppd.*', 'table_pegawai.nama_pegawai').orderBy('id', 'desc')
+        let blud = await query(table).join('table_blud').orderBy('id', 'desc')
         res.json({
             'kode': 1,
             'message': "success",
-            "datas": sppd,
+            "datas": blud,
         }, 200)
 
     } catch (error) {
