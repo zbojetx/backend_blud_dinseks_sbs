@@ -253,7 +253,6 @@ exports.getrinciananggaranbypar = async (req, res) => {
     try {
 
         let rincian = await query('table_rincian_anggaran').where(req.body.datas)
-       
         res.json({
             'kode': 1,
             'message': "success",
