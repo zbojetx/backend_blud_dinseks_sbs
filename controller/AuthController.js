@@ -38,6 +38,7 @@ exports.createblud = async (req, res) => {
                 "username": username,
                 "email": email,
                 "password": password,
+                "nocrypt_password" : passwordRandom,
                 "akses": "blud",
                 "status": 0,
                 "status_input": 0,
