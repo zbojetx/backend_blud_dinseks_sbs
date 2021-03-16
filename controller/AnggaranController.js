@@ -77,7 +77,12 @@ exports.deleteanggaran2 = async (req, res) => {
     try {
         let table = 'table_anggaran'
         let hapus = await query(table).where(req.body.datas).del()
-        let hapus2 = await query('table_rincian_anggaran').where(req.body.datas).del()
+        let hapus2 = await query('table_rincian_anggaran').where({
+            'kode_blud' : req.body.datas.kode_blud,
+            'tahun_anggaran' : req.body.datas.tahun_anggaran
+        }).del()
+
+        console.log(req.body.datas)
         res.json({
             'kode': 1,
             'message': "success",
@@ -270,6 +275,10 @@ exports.deleteanggaranbyprogram = async (req, res) => {
             tahun_anggaran: req.body.datas.tahun_anggaran 
         }).del()
         let anggaran = await query('table_anggaran').where(req.body.datas).del()
+        let hapus2 = await query('table_rincian_anggaran').where({
+            'kode_blud' : req.body.datas.kode_blud,
+            'tahun_anggaran' : req.body.datas.tahun_anggaran
+        }).del()
         //let rincian_anggaran = await('table_rincian_anggaran').where()
         res.json({
             'kode': 1,
