@@ -214,6 +214,12 @@ exports.datatoprint = async (req, res) => {
 
         let kepaladinas = await query('table_pegawai').where('pangkat_gol', 'Kepala')
         let verifikator = await query('table_pegawai').where('pangkat_gol', 'Verifikator')
+        let other = await query('table_program_kegiatan_anggaran').where({
+            'kode_blud': req.body.datas.kode_blud,
+            'kode_program': req.body.datas.kode_program,
+            'kode_kegiatan': req.body.datas.kode_kegiatan,
+            'tahun_anggaran' : req.body.datas.tahun_anggaran,
+        })
 
         let i = 0
 
@@ -240,7 +246,8 @@ exports.datatoprint = async (req, res) => {
                 anggaran,
                 rincian,
                 kepaladinas,
-                verifikator
+                verifikator,
+                other
             }
         }, 200)
 
