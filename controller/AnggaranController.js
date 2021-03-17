@@ -284,6 +284,8 @@ exports.deleteanggaranbyprogram = async (req, res) => {
 
         let programdankegiatan = await query('table_program_kegiatan_anggaran').where({ 
             kode_blud: req.body.datas.kode_blud,
+            kode_program: req.body.datas.kode_program,
+            kode_kegiatan: req.body.datas.kode_kegiatan,
             tahun_anggaran: req.body.datas.tahun_anggaran 
         }).del()
         let anggaran = await query('table_anggaran').where(req.body.datas).del()
