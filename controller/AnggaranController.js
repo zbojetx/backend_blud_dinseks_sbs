@@ -211,7 +211,6 @@ exports.datatoprint = async (req, res) => {
             .select('table_anggaran.*', 'table_kode_rekening.*')
             .where(req.body.datas)
             .orderBy('table_anggaran.id', 'asc')
-
         let kepaladinas = await query('table_pegawai').where('pangkat_gol', 'Kepala')
         let verifikator = await query('table_pegawai').where('pangkat_gol', 'Verifikator')
         let other = await query('table_program_kegiatan_anggaran').where({
@@ -220,6 +219,12 @@ exports.datatoprint = async (req, res) => {
             'kode_kegiatan': req.body.datas.kode_kegiatan,
             'tahun_anggaran' : req.body.datas.tahun_anggaran,
         })
+        let total = await query('table_rincian_anggaran').where({
+            'kode_blud': req.body.datas.kode_blud,
+            'kode_program': req.body.datas.kode_program,
+            'kode_kegiatan': req.body.datas.kode_kegiatan,
+            'tahun_anggaran' : req.body.datas.tahun_anggaran,
+        }).sum('jumlah as total')
 
         let i = 0
 
@@ -247,7 +252,8 @@ exports.datatoprint = async (req, res) => {
                 rincian,
                 kepaladinas,
                 verifikator,
-                other
+                other,
+                total
             }
         }, 200)
 
